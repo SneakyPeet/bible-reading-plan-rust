@@ -5,7 +5,7 @@ pub struct Book {
 }
 
 impl Book {
-    fn new(name: &str, chapters: u8) -> Self {
+    pub fn new(name: &str, chapters: u8) -> Self {
         Book {
             name: name.to_string(),
             chapters,
@@ -13,19 +13,29 @@ impl Book {
     }
 }
 
-struct BookList {
-    i: u8,
-    books: Vec<Book>,
+pub struct BookList {
+    pub i: u8,
+    pub books: Vec<Book>,
+}
+
+impl BookList {
+    pub fn new(i: u8, books: Vec<Book>) -> Self {
+        Self { i, books }
+    }
+}
+
+pub struct ReadingList {
+    pub booklists: Vec<BookList>,
 }
 
 #[derive(Eq, PartialEq, Debug)]
-struct Chapter {
+pub struct Chapter {
     book: Book,
     chapter_num: u8,
 }
 
 impl Chapter {
-    fn new(book: &Book, chapter_num: u8) -> Self {
+    pub fn new(book: &Book, chapter_num: u8) -> Self {
         Chapter {
             book: book.clone(),
             chapter_num,
@@ -34,7 +44,7 @@ impl Chapter {
 }
 
 #[derive(Eq, PartialEq, Debug)]
-struct BookListStat {
+pub struct BookListStat {
     chapter: Chapter,
 }
 
@@ -54,6 +64,15 @@ fn caluclate_book_list_stat(list: &BookList, day: u32) -> BookListStat {
 mod tests {
     use super::*;
 
+    #[test]
+    fn book_constructor() {
+        let expected = Book {
+            name: "A".to_string(),
+            chapters: 31,
+        };
+        assert_eq!(expected, test_book_a());
+    }
+
     fn test_book_a() -> Book {
         Book::new("A", 31)
     }
@@ -71,15 +90,6 @@ mod tests {
             i: 1,
             books: vec![test_book_a(), test_book_b(), test_book_c()],
         }
-    }
-
-    #[test]
-    fn book_constructor() {
-        let expected = Book {
-            name: "A".to_string(),
-            chapters: 31,
-        };
-        assert_eq!(expected, test_book_a());
     }
 
     #[test]
