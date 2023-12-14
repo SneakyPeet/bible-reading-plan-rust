@@ -7,7 +7,7 @@ pub fn reading_list() -> ReadingList {
         booklists: vec![BookList::new(
             1,
             vec![
-                Book::new("Genesis", 55), // TODO GET CORRECT
+                Book::new("Genesis", 50), // TODO GET CORRECT
                 Book::new("Exodus", 44),
             ],
         )],

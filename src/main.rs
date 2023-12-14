@@ -2,6 +2,6 @@ mod bible;
 mod books;
 
 fn main() {
-    let bible = bible::reading_list();
-    println!("Hello, world!");
+    let list = &bible::reading_list().booklists[0];
+    println!("{:#?}", books::caluclate_book_list_stat(list, 94));
 }

@@ -1,11 +1,11 @@
 #[derive(Eq, PartialEq, Clone, Debug)]
 pub struct Book {
     name: String,
-    chapters: u8,
+    chapters: u32,
 }
 
 impl Book {
-    pub fn new(name: &str, chapters: u8) -> Self {
+    pub fn new(name: &str, chapters: u32) -> Self {
         Book {
             name: name.to_string(),
             chapters,
@@ -14,12 +14,12 @@ impl Book {
 }
 
 pub struct BookList {
-    pub i: u8,
+    pub i: u32,
     pub books: Vec<Book>,
 }
 
 impl BookList {
-    pub fn new(i: u8, books: Vec<Book>) -> Self {
+    pub fn new(i: u32, books: Vec<Book>) -> Self {
         Self { i, books }
     }
 }
@@ -31,11 +31,11 @@ pub struct ReadingList {
 #[derive(Eq, PartialEq, Debug)]
 pub struct Chapter {
     book: Book,
-    chapter_num: u8,
+    chapter_num: u32,
 }
 
 impl Chapter {
-    pub fn new(book: &Book, chapter_num: u8) -> Self {
+    pub fn new(book: &Book, chapter_num: u32) -> Self {
         Chapter {
             book: book.clone(),
             chapter_num,
@@ -48,15 +48,27 @@ pub struct BookListStat {
     chapter: Chapter,
 }
 
-fn caluclate_book_list_stat(list: &BookList, day: u32) -> BookListStat {
+fn calculate_list_lookup(book_list: &BookList) -> (u32, Vec<(u32, &Book)>) {
+    let vec_size: u32 = book_list.books.iter().map(|x| x.chapters).sum();
+
+    let mut lookup: Vec<(u32, &Book)> = Vec::with_capacity(vec_size as usize);
+    for book in book_list.books.iter() {
+        for chapter in 1..book.chapters + 1 {
+            lookup.push((chapter, book))
+        }
+    }
+    (vec_size, lookup)
+}
+
+pub fn caluclate_book_list_stat(list: &BookList, day: u32) -> BookListStat {
+    let (lookup_size, lookup) = calculate_list_lookup(list);
+    println!("{}", lookup_size);
+    let chapter_index = (day - 1).rem_euclid(lookup_size);
+    let (chapter_num, book) = lookup[chapter_index as usize];
+    println!("{}", chapter_index);
+    println!("{}", chapter_num);
     BookListStat {
-        chapter: Chapter {
-            book: Book {
-                name: "TODO".to_string(),
-                chapters: 1,
-            },
-            chapter_num: 1,
-        },
+        chapter: Chapter::new(book, chapter_num),
     }
 }
 
@@ -97,6 +109,18 @@ mod tests {
         let given_day = 1;
         let expected_book = test_book_a();
         let expected_chapter = 1;
+        let expected = BookListStat {
+            chapter: Chapter::new(&expected_book, expected_chapter),
+        };
+        let given = test_book_list();
+        assert_eq!(expected, caluclate_book_list_stat(&given, given_day))
+    }
+
+    #[test]
+    fn caluclate_book_list_stat_given_day_last_day_first_book() {
+        let given_day = 31;
+        let expected_book = test_book_a();
+        let expected_chapter = 31;
         let expected = BookListStat {
             chapter: Chapter::new(&expected_book, expected_chapter),
         };
