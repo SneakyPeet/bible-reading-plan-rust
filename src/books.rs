@@ -47,7 +47,7 @@ impl Chapter {
 pub struct BookListStat {
     chapter: Chapter,
     total_chapters: u32,
-    chapter_index: u32,
+    list_chapter_index: u32,
 }
 
 fn calculate_list_lookup(book_list: &BookList) -> (u32, Vec<(u32, &Book)>) {
@@ -64,12 +64,12 @@ fn calculate_list_lookup(book_list: &BookList) -> (u32, Vec<(u32, &Book)>) {
 
 pub fn caluclate_book_list_stat(list: &BookList, day: u32) -> BookListStat {
     let (lookup_size, lookup) = calculate_list_lookup(list);
-    let chapter_index = (day - 1).rem_euclid(lookup_size);
-    let (chapter_num, book) = lookup[chapter_index as usize];
+    let list_chapter_index = (day - 1).rem_euclid(lookup_size);
+    let (chapter_num, book) = lookup[list_chapter_index as usize];
     BookListStat {
         chapter: Chapter::new(book, chapter_num),
         total_chapters: lookup_size,
-        chapter_index: chapter_index + 1,
+        list_chapter_index: list_chapter_index + 1,
     }
 }
 
@@ -113,7 +113,7 @@ mod tests {
         let expected = BookListStat {
             chapter: Chapter::new(&expected_book, expected_chapter),
             total_chapters: 35,
-            chapter_index: 1,
+            list_chapter_index: 1,
         };
         let given = test_book_list();
         assert_eq!(expected, caluclate_book_list_stat(&given, given_day))
@@ -127,7 +127,7 @@ mod tests {
         let expected = BookListStat {
             chapter: Chapter::new(&expected_book, expected_chapter),
             total_chapters: 35,
-            chapter_index: 31,
+            list_chapter_index: 31,
         };
         let given = test_book_list();
         assert_eq!(expected, caluclate_book_list_stat(&given, given_day))
@@ -141,7 +141,7 @@ mod tests {
         let expected = BookListStat {
             chapter: Chapter::new(&expected_book, expected_chapter),
             total_chapters: 35,
-            chapter_index: 32,
+            list_chapter_index: 32,
         };
         let given = test_book_list();
         assert_eq!(expected, caluclate_book_list_stat(&given, given_day))
@@ -155,7 +155,7 @@ mod tests {
         let expected = BookListStat {
             chapter: Chapter::new(&expected_book, expected_chapter),
             total_chapters: 35,
-            chapter_index: 35,
+            list_chapter_index: 35,
         };
         let given = test_book_list();
         assert_eq!(expected, caluclate_book_list_stat(&given, given_day))
@@ -169,7 +169,7 @@ mod tests {
         let expected = BookListStat {
             chapter: Chapter::new(&expected_book, expected_chapter),
             total_chapters: 35,
-            chapter_index: 2,
+            list_chapter_index: 2,
         };
         let given = test_book_list();
         assert_eq!(expected, caluclate_book_list_stat(&given, given_day))
@@ -183,7 +183,7 @@ mod tests {
         let expected = BookListStat {
             chapter: Chapter::new(&expected_book, expected_chapter),
             total_chapters: 35,
-            chapter_index: 32,
+            list_chapter_index: 32,
         };
         let given = test_book_list();
         assert_eq!(expected, caluclate_book_list_stat(&given, given_day))
